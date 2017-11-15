@@ -1,0 +1,35 @@
+<!--
+  Generated template for the InshortsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<swiper [config]="config" #usefulSwiper>
+    <div class="swiper-wrapper" >
+      <div class="swiper-slide" *ngFor='let card of appData'>
+        <ion-card (swipeup)="swipeEvent($event)">
+          <div class="card-image">
+            <div class="tag">Featured</div>
+            <img [src]='card.url'>
+          </div>
+          <div class="container card-title">
+            <p>{{card.title}}</p>
+          </div>
+          <div class="container card-content">
+            <p>{{card.content}}</p>
+          </div>
+          <div class="container boxes">
+            <div class="box">
+              <i class="material-icons share">share</i>
+              <p>Share</p>
+            </div>
+            <div class="box">
+              <i class="material-icons refresh">refresh</i>
+              <p>Refresh</p>
+            </div>
+          </div>
+        </ion-card>
+      </div>
+
+    </div>
+</swiper>

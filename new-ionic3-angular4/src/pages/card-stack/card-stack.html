@@ -1,0 +1,32 @@
+<!--
+  Generated template for the CardStackPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<div swing-stack #myswing1 [stackConfig]="stackConfig" (throwoutup)="voteUp(true)" id="card-stack" (swipe)="swipeEvent($event)">
+  <div swing-stack2 #myswing2 [stackConfig]="stackConfigCard" (throwoutup)="voteUp(true)" id="card-stack1" (swipe)="swipeEvent($event)">
+    <div class="card" #mycards1 swing-card *ngFor='let card of appData;trackBy:trackByCards; let i=index;'>
+      <div class="card-image">
+        <div class="tag">Featured</div>
+        <img [src]='card.url'>
+      </div>
+      <div class="container card-title">
+        <p>{{card.title}}</p>
+      </div>
+      <div class="container card-content">
+        <p>{{card.content}}</p>
+      </div>
+      <div class="container boxes">
+        <div class="box">
+          <i class="material-icons share">share</i>
+          <p>Share</p>
+        </div>
+        <div class="box">
+          <i class="material-icons refresh">refresh</i>
+          <p>Refresh</p>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
