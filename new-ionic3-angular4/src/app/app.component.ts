@@ -8,6 +8,8 @@ import {CardStackPage} from '../pages/card-stack/card-stack';
 import {HomePage} from '../pages/home/home';
 import { Storage } from '@ionic/storage';
 import { InshortsService } from '../services/inshorts.service';
+import { Screenshot } from '@ionic-native/screenshot';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +20,7 @@ export class MyApp {
   rootPage:any = HomePage;
   @ViewChild(InshortsPage) inshorts:InshortsPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public push: Push, public alertCtrl: AlertController,public storage: Storage,public zone:NgZone,public inshortsService:InshortsService) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public push: Push, public alertCtrl: AlertController,public storage: Storage,public zone:NgZone,public inshortsService:InshortsService,public screenshot: Screenshot,public socialSharing:SocialSharing) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -62,7 +64,7 @@ export class MyApp {
     if(notification.additionalData.coldstart)
     {
       //let a = new InshortsPage(this.zone);
-      let a =  new HomePage(this.zone,this.inshortsService);
+      let a =  new HomePage(this.zone,this.inshortsService,this.screenshot,this.socialSharing);
       console.log("Opened by coldstart");
       console.log("App opened in background");
       console.log("title"+notification.message)
@@ -70,7 +72,7 @@ export class MyApp {
       a.notificationData(notification['message'],"RAkesh");
     }else{
       //let a = new InshortsPage(this.zone);
-      let a =  new HomePage(this.zone,this.inshortsService);
+      let a =  new HomePage(this.zone,this.inshortsService,this.screenshot,this.socialSharing);
       console.log("App is in background");
       console.log(JSON.stringify(notification));
       console.log("Message"+notification['message']);

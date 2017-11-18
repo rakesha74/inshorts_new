@@ -12,7 +12,9 @@ import { SwingModule } from 'angular2-swing';
 import {HomePage} from '../pages/home/home';
 import { IonicStorageModule } from '@ionic/storage';
 import { InshortsService } from '../services/inshorts.service';
-
+import { HttpClientModule } from '@angular/common/http';
+import { Screenshot } from '@ionic-native/screenshot';
+import { SocialSharing } from '@ionic-native/social-sharing';
 @NgModule({
   declarations: [
     MyApp,
@@ -24,6 +26,7 @@ import { InshortsService } from '../services/inshorts.service';
     BrowserModule,
     SwiperModule,
     SwingModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
   ],
@@ -38,6 +41,8 @@ import { InshortsService } from '../services/inshorts.service';
     StatusBar,
     SplashScreen,
     InshortsService,
+    Screenshot,
+    SocialSharing,
 	Push,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
