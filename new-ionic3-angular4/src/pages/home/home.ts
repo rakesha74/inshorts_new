@@ -1,10 +1,11 @@
 import { Component,ViewChild,NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { SwiperModule,SwiperComponent } from 'angular2-useful-swiper'; 
+import { SwiperModule,SwiperComponent} from 'angular2-useful-swiper'; 
 import { InshortsService,fact } from '../../services/inshorts.service';
 import { Observable } from 'rxjs/Observable';
 import { Screenshot } from '@ionic-native/screenshot';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 @Component({
   selector: 'page-home',
@@ -13,11 +14,11 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 export class HomePage {
 
   facts:Observable<fact[]>;
-  static image_url:string;
   static socialSharing_temp:SocialSharing;
+  swiper:SwiperModule;
 
   @ViewChild('usefulSwiper') usefulSwiper: SwiperComponent;
-  //zoneDemo:NgZone;
+  
   config: SwiperOptions  = {
 
     slidesPerView: 1,
@@ -27,14 +28,12 @@ export class HomePage {
     speed:300,
     pagination: '.swiper-pagination',
     paginationClickable: false
-	
-
   };
   
-  constructor(public zone:NgZone,public inshortsService:InshortsService,public screenshot: Screenshot,public socialSharing:SocialSharing) {
+  constructor(public inshortsService:InshortsService,public screenshot: Screenshot,public socialSharing:SocialSharing,public push: Push) {
     this.facts=this.inshortsService.facts;
     HomePage.socialSharing_temp=socialSharing;
-    
+    this.pushsetup();
     
   }
 
@@ -43,24 +42,24 @@ export class HomePage {
     this.inshortsService.loadAll();
   }
 
-  notificationData(url,image){
+  public notificationData(url,image){
     
     console.log(url);
     console.log(image);
-    //console.log(this.appData);
+    
     var entry:fact={
       "url":"https://amgs.000webhostapp.com/inshorts/img_3.jpg",
       "title":"Do you know who is the Frankeistein?",
       "content":"Rakesh:Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteurm sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     };
-    //this.appData.splice(0,0,entry);
-    //this.appData=this.appData.merge(entry);
+    
     this.inshortsService.create(entry);
+    console.log("Index::"+this.usefulSwiper.swiper.slideTo(0,200,true));
+    
   }
 
   refresh()
   {
-    //this.inshortsService.loadAll();
     window.location.reload();
   }
 
@@ -83,4 +82,70 @@ export class HomePage {
     });
   }
   
+  pushsetup() {
+    const options: PushOptions = {
+     android: {
+         
+     },
+     ios: {
+         alert: 'true',
+         badge: true,
+         sound: 'false'
+     },
+     windows: {}
+  };
+ 
+  const pushObject: PushObject = this.push.init(options);
+  
+  pushObject.on('notification').subscribe((notification: any) => {
+   
+    if (notification.additionalData.foreground) {
+      /*
+      let youralert = this.alertCtrl.create({
+        title: 'New Push notification',
+        message: notification.message
+        
+      });
+      youralert.present();
+      */
+      console.log("App opened in foreground");
+    }
+  
+    
+    if(notification.additionalData.coldstart)
+    {
+      
+      console.log("Opened by coldstart");
+      console.log("App opened in background");
+      console.log("title"+notification.message)
+      //a.notificationData("Summary",notification.mesage);
+      this.notificationData(notification['message'],"RAkesh");
+    }else{
+     
+      
+      console.log("App is in background");
+      console.log(JSON.stringify(notification));
+      console.log("Message"+notification['message']);
+      this.notificationData(notification['message'],"RAkesh");
+    }
+  
+    
+  });
+ 
+  pushObject.on('registration').subscribe((registration: any) => {
+     //do whatever you want with the registration ID
+     console.log("rakesh:"+registration.registrationId);
+     console.log(registration.registrationType);
+  });
+ 
+
+  pushObject.subscribe('/topics/facts').then(function(success){
+    console.log("Rakesh topics"+success);
+  },function(error){
+    console.log("Rakesh error"+error);
+  });
+
+  pushObject.on('error').subscribe(error => alert('Error with Push plugin' + error));
+  }
+ 
 }
